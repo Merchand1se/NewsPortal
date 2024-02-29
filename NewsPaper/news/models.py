@@ -1,11 +1,12 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models import Sum
+
 
 
 class Author(models.Model):
     autUser = models.OneToOneField(User, on_delete=models.CASCADE)
-    ratingAut = models.IntegerField(default=0)
+    ratingAut = models.SmallIntegerField(default=0)
 
     def update_rating(self):
         post_sum = self.post_set.aggregate(postRating=Sum('rating'))
@@ -18,47 +19,54 @@ class Author(models.Model):
         self.ratingAut = temp_sum_p * 3 + temp_sum_c
         self.save()
 
-
 class Category(models.Model):
-    name = models.CharField(unique=True, max_length=255)
-
+    name = models.CharField(max_length=128, unique=True)
 
 
 class Post(models.Model):
-    Article = "AR"
-    News = "NW"
-    CategoryChoice = [
+    ARTICLE = 'AR'
+    NEWS = 'NW'
+    CATEGOY_CHOICES = (
         ('AR', 'Статья'),
         ('NW', 'Новость'),
-    ]
+    )
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    type = models.CharField(max_length=2,choices=CATEGOY_CHOICES, default=ARTICLE)
+    creationDate = models.DateTimeField(auto_now_add=True)
+    postCategory = models.ManyToManyField(Category, through='PostCategory')
+    title = models.CharField(max_length=128)
+    content = models.TextField()
+    rating = models.SmallIntegerField(default=0)
 
-    author = models.OneToOneField(Author, on_delete=models.CASCADE),
-    ArticleNewCategory = models.CharField(choices=CategoryChoice, default=News),
-    CreateDate = models.DateTimeField(auto_now_add=True),
-    PostInfo = models.ManyToManyField(Category, through='PostCategory'),
-    Heading = models.CharField(max_length=100),
-    Content = models.TextField(),
-    rating = models.IntegerField(default=0)
-
-    def Preview(self):
-        return f'{self.Content[:123]} ...'
-
-class PostCategory:
-    post = models.ForeignKey(Post, on_delete=models.CASCADE),
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-
-class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE),
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    CommentContent = models.TextField(),
-    Date = models.DateTimeField(auto_now_add=True),
-    rating = models.IntegerField(default=0)
-
-    def Like(self):
+    def like(self):
         self.rating += 1
         self.save()
 
-    def Dislike(self):
+    def dislike(self):
         self.rating -= 1
         self.save()
 
+    def preview(self):
+        return f'{self.content[:123]} ...'
+
+
+
+class PostCategory(models.Model):
+    postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
+    categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+
+class Comment(models.Model):
+    commentPost = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    commentUser = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    dateCreation = models.DateTimeField(auto_now_add=True)
+    rating = models.SmallIntegerField(default=0)
+
+    def like(self):
+        self.rating += 1
+        self.save()
+
+    def dislike(self):
+        self.rating -= 1
+        self.save()
