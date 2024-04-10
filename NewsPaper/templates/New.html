@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+
+
+{% block title %}
+<h3>{{ new.title }}</h3>
+{% endblock title %}
+
+{% block content %}
+   <table>
+       <tr>
+           <td>Заголовок</td>
+           <td>Дата публикации</td>
+           <td>Статья</td>
+       </tr>
+       <tr>
+           <td>{{ new.title }}</td>
+           <td>{{ new.creationDate }}</td>
+           <td>{{ new.content }}</td>
+       </tr>
+   </table>
+{% endblock content %}
