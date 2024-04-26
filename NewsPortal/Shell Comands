@@ -1,0 +1,81 @@
+from django.contrib.auth.models import User
+
+user1 = User.objects.create_user(username='Oleg')
+user2 = User.objects.create_user('Andrew')
+
+from news.models import Author
+
+Author.objects.create(autUser=user1)
+
+author1 = Author.objects.get(id=1)
+author2 = Author.objects.create(autUser=user2)
+
+from news.models import Category
+
+Category.objects.create(name='IT')
+category1 = Category.objects.get(id=1)
+category2 = Category.objects.create(name='in IT')
+category3 = Category.objects.create(name='TV')
+category4 = Category.objects.create(name='Muz')
+
+from news.models import Post
+
+Post.objects.create(author=author1, type='AR', title='Post 1', conten
+t='IT')
+post1 = Post.objects.get(id=1)
+post2 = Post.objects.create(author=author2, type='AR', title='Go IT',content='IT is the capital of Great Britan')
+News1 = Post.objects.create(author=author2, type='NW', title='Muz', content='Heavy metall, Punc-rock, Pornofilms relocated to Amsterdam')
+
+Post.objects.get(id=1).postCategory.add(Category.objects.get(id=1))
+post2.postCategory.add(category2, category3)
+News1.postCategory.add(category3, category4)
+
+from news.models import Comment
+
+Comment.objects.create(commentPost=Post.objects.get(id=1), commentUser=Author.objects.get(id=1).autUser, text='GOOOD!!')
+comment1 = Comment.objects.get(id=1)
+comment2 = Comment.objects.create(commentPost=post2, commentUser=user2, text='Oh le puta madre')
+comment3 = Comment.objects.create(commentPost=post2, commentUser=user1, text='Vaya')
+comment4 = Comment.objects.create(commentPost=News1, commentUser=user2, text='Me pareca ca la vena')
+
+Comment.objects.get(id=1).like()
+Comment.objects.get(id=1).dislike()
+News1.dislike()
+comment1.like()
+comment1.dislike()
+comment2.dislike()
+comment3.like()
+comment4.like()
+News1.like()
+
+retAutor1 = Author.objects.get(id=1)
+retAutor1.update_rating()
+retAutor1.ratingAut
+retAutor2 = Author.objects.get(id=2)
+retAutor2.update_rating()
+retAutor2.ratingAut
+
+best_user = Author.objects.order_by('-ratingAut').first()
+print(best_user.autUser.username, best_user.ratingAut)
+
+best_post = Post.objects.order_by('-rating').first()
+date_added = best_post.creationDate
+username = best_post.author.autUser.username
+rating = best_post.rating
+title = best_post.title
+preview = best_post.preview()
+print(f"Дата добавления:{date_added} Автор:{username} Рейтинг:{rating} Заголовок: {title} Превью: {preview}")
+
+best_post = Post.objects.order_by('-rating').first()
+comments = Comment.objects.filter(commentPost=best_post)
+
+comments_data = []
+for comment in comments:
+    comment_data = {
+        'Дата': comment.dateCreation,
+        'Пользователь': comment.commentUser.username,
+        'Рейтинг': comment.rating,
+        'Текст': comment.text
+    }
+    comments_data.append(comment_data)
+print(f"Комментарии:\n{comments_data}")
