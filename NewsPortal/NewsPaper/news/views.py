@@ -3,6 +3,7 @@ from .models import Post
 from .filters import NewsFilter
 from .forms import NewForm, ArticleForm
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 class NewsList(ListView):
@@ -30,7 +31,8 @@ class NewDetail(DetailView):
     context_object_name = 'new'
 
 
-class create_new(CreateView):
+class create_new(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.create_product',)
     form_class = NewForm
     model = Post
     template_name = 'NewsCreate.html'
@@ -41,19 +43,22 @@ class create_new(CreateView):
         return super().form_valid(form)
 
 
-class NewUpdate(UpdateView):
+class NewUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.new_update',)
     form_class = NewForm
     model = Post
     template_name = 'NewsCreate.html'
 
 
-class NewDelete(DeleteView):
+class NewDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_new',)
     model = Post
     template_name = 'NewDelete.html'
     success_url = reverse_lazy('news_list')
 
 
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.article_create',)
     form_class = ArticleForm
     model = Post
     template_name = 'NewsCreate.html'
@@ -65,13 +70,15 @@ class ArticleCreate(CreateView):
         return super().form_valid(form)
 
 
-class ArticleUpdate(UpdateView):
+class ArticleUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.article_edit',)
     form_class = NewForm
     model = Post
     template_name = 'NewsCreate.html'
 
 
-class ArticleDelete(DeleteView):
+class ArticleDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.article_delete',)
     model = Post
     template_name = 'NewDelete.html'
     success_url = reverse_lazy('news_list')
