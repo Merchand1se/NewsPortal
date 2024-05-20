@@ -137,7 +137,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-LOGIN_REDIRECT_URL = "/NewsList"
+LOGIN_REDIRECT_URL = "/news/news"
+
+LOGOUT_REDIRECT_URL = "/accounts/login"
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

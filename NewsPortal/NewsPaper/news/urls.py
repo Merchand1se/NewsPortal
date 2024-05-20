@@ -3,7 +3,7 @@ from .views import NewsList, NewDetail, create_new, NewDelete, NewUpdate, Articl
 
 
 urlpatterns = [
-    path('', NewsList.as_view(), name='news_list'),
+    path('news/', NewsList.as_view(), name='news_list'),
     path('<int:pk>', NewDetail.as_view(), name='new_detail'),
     path('create/', create_new.as_view(), name='new_create'),
     path('<int:pk>/edit/', NewUpdate.as_view(), name='new_update'),
