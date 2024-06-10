@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load custom_filters %}
+
 {% block title %}
 <h3>News</h3>
 {% endblock title %}
@@ -8,6 +10,12 @@
    <h1>Все новости</h1>
    <h2>{{news|length}}</h2>
    <h3>{{time_published|date:'d M y'}}</h3>
+
+   <form action="" method="get">
+         {{ filterset.form.as_p }}
+         <input type="submit" value="Find..."/>
+   </form>
+
    <hr>
    {% if news %}
       <table>
