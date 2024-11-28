@@ -9,6 +9,8 @@
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         {% load static %}
+        {% load cache %}
+        {% cache 300 Responsive navbar %}
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
     </head>
     <body>
@@ -34,6 +36,7 @@
                 </div>
             </div>
         </nav>
+        {% endcache Responsive navbar %}
         <!-- Page content-->
         <div class="container">
             <div class="text-center mt-5">

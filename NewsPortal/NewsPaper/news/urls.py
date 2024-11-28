@@ -2,10 +2,10 @@ from django.urls import path
 
 from .models import Subscriber
 from .views import NewsList, NewDetail, create_new, NewDelete, NewUpdate, ArticleDelete, ArticleCreate, ArticleUpdate
-
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
-    path('news/', NewsList.as_view(), name='news_list'),
+    path('news/', cache_page(60*1)(NewsList.as_view()), name='news_list'),
     path('<int:pk>', NewDetail.as_view(), name='new_detail'),
     path('create/', create_new.as_view(), name='new_create'),
     path('<int:pk>/edit/', NewUpdate.as_view(), name='new_update'),

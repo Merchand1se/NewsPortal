@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
+from django.core.cache import cache
 
 
 class NewsList(ListView):
@@ -33,6 +34,13 @@ class NewDetail(DetailView):
     model = Post
     template_name = 'New.html'
     context_object_name = 'new'
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'product-{self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'product-{self.kwargs["pk"]}', obj)
+        return obj
 
 
 class create_new(PermissionRequiredMixin, CreateView):

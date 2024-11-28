@@ -24,3 +24,4 @@ class NewsFilter(FilterSet):
         fields = {
             'title': ['icontains'],
         }
+
