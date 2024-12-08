@@ -1,0 +1,25 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+
+<html lang="en">
+{% block title %}
+<h3>{{ new.title }}</h3>
+{% endblock title %}
+
+{% load cache %}
+    {% cache 300 header %}
+        {% block content %}
+           <table>
+               <tr>
+                   <td>{{% trans "Заголовок" %}}</td>
+                   <td>{{% trans "Дата публикации" %}}</td>
+                   <td>{{% trans "Статья" %}}</td>
+               </tr>
+               <tr>
+                   <td>{{ new.title }}</td>
+                   <td>{{ new.creationDate }}</td>
+                   <td>{{ new.content }}</td>
+               </tr>
+           </table>
+        {% endblock content %}
+{% endcache %}
