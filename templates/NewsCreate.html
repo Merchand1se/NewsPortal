@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+
+{% block title %}
+<h3>{% trans "Create your own article!" %}</h3>
+{% endblock title %}
+
+{% block content %}
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="{% trans 'Save' %}"/>
+</form>
+{% endblock content %}

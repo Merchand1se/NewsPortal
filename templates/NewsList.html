@@ -1,0 +1,88 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+
+{% load custom_filters %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page title</title>
+</head>
+<body>
+    <form action="{% url 'set_language' %}" method="POST"> {% csrf_token %} <!-- Не забываем по csrf_token для POST запросов -->
+        <input type="hidden" name="next" value="{{ redirect_to }}">
+        {% get_current_language as LANGUAGE_CODE %}
+        <select name="language" id="">
+            {% get_available_languages as LANGUAGES %} <!-- получаем языки -->
+            {% get_language_info_list for LANGUAGES as languages %} <!-- Помещаем их в список languages -->
+            {% get_current_language as LANGUAGE_CODE %}
+            {% for language in languages %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
+                <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                    {{ language.name_local }} - {{ language.code }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="set">
+    </form>
+</body>
+</html>
+{% block title %}
+<h3>{% trans 'News' %}</h3>
+{% endblock title %}
+
+{% block content %}
+   <h1>{% trans 'All news' %}</h1>
+   <h2>{{news|length}}</h2>
+   <h3>{{time_published|date:'d M y'}}</h3>
+
+   <form action="" method="get">
+         {{ filterset.form.as_p }}
+         <input type="submit" value="{% trans 'Find...' %}"/>
+   </form>
+
+   <hr>
+   {% if news %}
+      <table>
+          <tr>
+             <td>{% trans 'Title' %}</td>
+             <td>{% trans 'Creation date' %}</td>
+             <td>{% trans 'Preface' %}</td>
+          </tr>
+         {% for news in news %}
+         <tr>
+            <td>{{ news.title }}</td>
+             <td>{{ news.creationDate }}</td>
+             <td>{{ news.content|truncatewords:20 }}</td>
+         </tr>
+          {% endfor %}
+      </table>
+   {% else %}
+      <h2>{% trans 'Unfortunately, there is no news yet...' %}</h2>
+   {% endif %}
+
+   {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}
+
+
+
+
+
+

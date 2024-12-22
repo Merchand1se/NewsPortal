@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: Mypostgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: NewsPortal_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data

@@ -1,0 +1,16 @@
+{% load i18n %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Are you sure that you want to logout?" %}</title>
+</head>
+<body>
+<h3>{% trans "Stay here" %}</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% trans "Leave us..." %}</button>
+  </form>
+  <p><a href="{% url 'logout' %}">{% trans "Leave us..." %}</a></p>
+</body>
+</html>
